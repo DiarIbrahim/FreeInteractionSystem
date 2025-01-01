@@ -1,0 +1,12 @@
+/NOLOGO
+/errorReport:prompt
+/MACHINE:x64
+/SUBSYSTEM:WINDOWS
+/DEF
+/NAME:"UnrealEditor-FreeInteractionSystem.dll"
+/IGNORE:4221
+/NODEFAULTLIB
+"C:\Users\PC\Documents\Unreal Projects\TestCpp\Intermediate\Build\Win64\x64\TestCppEditor\Development\Engine\SharedPCH.Engine.ShadowErrors.InclOrderUnreal5_0.h.obj"
+"C:\Users\PC\Documents\Unreal Projects\TestCpp\Plugins\FreeInteractionSystem\Intermediate\Build\Win64\x64\UnrealEditor\Development\FreeInteractionSystem\FreeInteractionSystem.cpp.obj"
+"C:\Users\PC\Documents\Unreal Projects\TestCpp\Plugins\FreeInteractionSystem\Intermediate\Build\Win64\x64\UnrealEditor\Development\FreeInteractionSystem\Default.rc2.res"
+/OUT:"C:\Users\PC\Documents\Unreal Projects\TestCpp\Plugins\FreeInteractionSystem\Intermediate\Build\Win64\x64\UnrealEditor\Development\FreeInteractionSystem\UnrealEditor-FreeInteractionSystem.lib"

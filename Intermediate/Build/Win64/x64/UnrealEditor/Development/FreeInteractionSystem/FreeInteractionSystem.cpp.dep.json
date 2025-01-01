@@ -1,0 +1,14 @@
+{
+    "Version": "1.2",
+    "Data": {
+        "Source": "c:\\users\\pc\\documents\\unreal projects\\testcpp\\plugins\\freeinteractionsystem\\source\\freeinteractionsystem\\freeinteractionsystem.cpp",
+        "ProvidedModule": "",
+        "PCH": "c:\\users\\pc\\documents\\unreal projects\\testcpp\\intermediate\\build\\win64\\x64\\testcppeditor\\development\\engine\\sharedpch.engine.shadowerrors.inclorderunreal5_0.h.pch",
+        "Includes": [
+            "c:\\users\\pc\\documents\\unreal projects\\testcpp\\plugins\\freeinteractionsystem\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\freeinteractionsystem\\definitions.freeinteractionsystem.h",
+            "c:\\users\\pc\\documents\\unreal projects\\testcpp\\plugins\\freeinteractionsystem\\source\\freeinteractionsystem\\freeinteractionsystem.h"
+        ],
+        "ImportedModules": [],
+        "ImportedHeaderUnits": []
+    }
+}

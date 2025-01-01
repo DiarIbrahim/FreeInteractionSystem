@@ -1,0 +1,15 @@
+{
+	"RemapUnityFiles": 
+	{
+		"Module.FreeInteractionSystem.cpp.obj": [
+			"FreeInteractionSystem.init.gen.cpp.obj",
+			"FreeInteractionSystemTypes.gen.cpp.obj",
+			"InteractableComponent.gen.cpp.obj",
+			"InteractionComponent.gen.cpp.obj",
+			"InteractableComponent.cpp.obj",
+			"InteractionComponent.cpp.obj",
+			"FreeInteractionSystem.cpp.obj",
+			"FreeInteractionSystemTypes.cpp.obj"
+		]
+	}
+}
