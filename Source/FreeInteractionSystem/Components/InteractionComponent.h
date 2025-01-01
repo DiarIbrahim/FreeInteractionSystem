@@ -26,6 +26,10 @@ public:
 	
 	UPROPERTY(BlueprintReadWrite,EditAnywhere)
 	float CheckForInteractionInterval = 0.1f;
+	// when the interactable actor's Interaction type is requiring some time to complete the interaction (see @TimeToInteract in Interactable component)
+	// should we go ahead and call the end interaction automatically ?
+	UPROPERTY(BlueprintReadWrite,EditAnywhere)
+	bool bCallEndInteractionAfterTimedInteractionFinished = true;
 	UPROPERTY(BlueprintReadWrite,EditAnywhere)
 	TEnumAsByte<ECollisionChannel> TraceChannel;
 	UPROPERTY(BlueprintReadWrite,EditAnywhere)
@@ -34,7 +38,7 @@ public:
 	
 	UFUNCTION(BlueprintCallable)
 	void StartInteraction();
-	void UpdateInteract(float Alpha, bool bCompleted);
+	void UpdateInteraction(float Alpha, bool bCompleted);
 	UFUNCTION(BlueprintCallable)
 	void EndInteraction();
 
@@ -79,7 +83,7 @@ private:
 	float HoldInteractingTime = 0.0f;
 	float HoldInteractingTimeCounter = 0.0f;
 	bool bInteractionSucceeded = false;
-
+	bool bInteractionEnded = false;
 	float CheckCounter = 0.0f;
 
 };

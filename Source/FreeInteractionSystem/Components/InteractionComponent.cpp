@@ -59,12 +59,12 @@ void UInteractionComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 		
 		if(FMath::IsNearlyEqual(HoldInteractingTimeCounter,HoldInteractingTime))
 		{
-			UpdateInteract(1.0f,true);
+			UpdateInteraction(1.0f,true);
 			
 		}else
 		{
 			float Alpha =  HoldInteractingTimeCounter / HoldInteractingTime;
-			UpdateInteract(Alpha,false);
+			UpdateInteraction(Alpha,false);
 
 		}
 
@@ -77,8 +77,10 @@ void UInteractionComponent::StartInteraction()
 
 	// when we start interacting there needs to be an interactable on focus
 
-	if(FocusedInteractable != nullptr) return;
+	if(FocusedInteractable == nullptr) return;
 
+	bInteractionEnded = false;
+	
 	FocusedInteractable->OnInteractStarted(this);
 	if(OnInteractStarted.IsBound())
 	{
@@ -97,11 +99,10 @@ void UInteractionComponent::StartInteraction()
 	}else
 	{
 		bHoldInteracting = true;
-		HoldInteractingTimeCounter = HoldInteractingTime;
 	}
 }
 
-void UInteractionComponent::UpdateInteract(float Alpha,bool bCompleted)
+void UInteractionComponent::UpdateInteraction(float Alpha,bool bCompleted)
 {
 	// the interaction time is ended
 	if(FocusedInteractable)
@@ -114,12 +115,19 @@ void UInteractionComponent::UpdateInteract(float Alpha,bool bCompleted)
 		bInteractionSucceeded = true;
 		EndInteraction();
 	}
+
+	if(OnInteractUpdate.IsBound())
+	{
+		OnInteractUpdate.Broadcast(FocusedInteractable , Alpha);
+	}
 	
 }
 
 void UInteractionComponent::EndInteraction()
 {
-
+	if(bInteractionEnded) return;
+	bInteractionEnded = true;
+	
 	// interaction is successful
 	if(FocusedInteractable)
 	{
@@ -148,7 +156,7 @@ void UInteractionComponent::CheckInteraction()
 	// FCollisionObjectQueryParams ObjectQueryParams = FCollisionObjectQueryParams(InteractableObjectTypes);
 
 	FVector StartLoc = GetCameraTransform().GetLocation();
-	FVector EndLoc = GetCameraTransform().GetRotation().Vector()* MaxInteractDistance;
+	FVector EndLoc = StartLoc + GetCameraTransform().GetRotation().GetForwardVector() * MaxInteractDistance;
 	
 	// Perform the overlap query
 	FHitResult hit;
@@ -204,7 +212,7 @@ void UInteractionComponent::CheckInteraction()
 	}
 
 
-	DrawDebugLine(GetWorld() ,StartLoc, EndLoc, bNoInteract == false ? FColor::Green : FColor::Red , false, 0.2 , 0,4);
+	// DrawDebugLine(GetWorld() ,StartLoc, EndLoc, bNoInteract == false ? FColor::Green : FColor::Red , false, 0.2 , 0,4);
 
 
 

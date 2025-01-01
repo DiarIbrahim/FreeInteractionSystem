@@ -36,22 +36,40 @@ bool UInteractableComponent::CanInteract_Implementation(UInteractionComponent* I
 
 void UInteractableComponent::OnFocusStarted(UInteractionComponent* Interactor)
 {
+	if(OnFocusStartedDelegate.IsBound()){
+		OnFocusStartedDelegate.Broadcast(Interactor);
+	}
 }
 
 void UInteractableComponent::OnFocusEnded(UInteractionComponent* Interactor)
 {
+	if(OnFocusEndedDelegate.IsBound()){
+		OnFocusEndedDelegate.Broadcast(Interactor);
+	}
 }
 
 void UInteractableComponent::OnInteractStarted(UInteractionComponent* Interactor)
 {
+	if(OnInteractStartedDelegate.IsBound())
+	{
+		OnInteractStartedDelegate.Broadcast(Interactor);
+	}
 }
 
 void UInteractableComponent::OnInteractUpdate(UInteractionComponent* Interactor, float Alpha)
 {
+	if(OnInteractUpdatedDelegate.IsBound())
+	{
+		OnInteractUpdatedDelegate.Broadcast(Interactor, Alpha);
+	}
 }
 
 void UInteractableComponent::OnInteractEnded(UInteractionComponent* Interactor, bool bSuccess)
 {
+	if(OnInteractEndedDelegate.IsBound())
+	{
+		OnInteractEndedDelegate.Broadcast(Interactor, bSuccess);
+	}
 }
 
 // Called when the game starts

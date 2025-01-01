@@ -27,6 +27,11 @@ public:
 
 
 	
+		
+	UPROPERTY(BlueprintReadWrite,EditAnywhere)
+	FText InteractableName;
+	UPROPERTY(BlueprintReadWrite,EditAnywhere)
+	FText InteractableMessage;
 	UPROPERTY(BlueprintReadWrite,EditAnywhere)
 	float InteractionDistance = 120.0f;
 	UPROPERTY(BlueprintReadWrite,EditAnywhere)
