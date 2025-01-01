@@ -24,16 +24,8 @@ UInteractionComponent::UInteractionComponent()
 void UInteractionComponent::BeginPlay()
 {
 	Super::BeginPlay();
-
-		
+	
 	Camera = GetOwner()->GetComponentByClass<UCameraComponent>();
-	if(Camera == nullptr)
-	{
-		if(bDebugMessages)
-		{
-			GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Red, "Camera");
-		}
-	}
 }
 
 
@@ -253,7 +245,7 @@ void UInteractionComponent::CurrentInteractableLostFocus()
 
 
 	// TODO when this happens we need to make sure that we are not continuing the hold and counting  process for interaction
-	
+	EndInteraction();
 }
 
 

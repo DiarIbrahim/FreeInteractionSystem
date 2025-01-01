@@ -27,21 +27,15 @@ public:
 
 
 	
-		
 	UPROPERTY(BlueprintReadWrite,EditAnywhere)
-	FText InteractableName;
-	UPROPERTY(BlueprintReadWrite,EditAnywhere)
-	FText InteractableMessage;
+	FInteractableVisualData ItemVisualData;
+	// min distance to interact with this
 	UPROPERTY(BlueprintReadWrite,EditAnywhere)
 	float InteractionDistance = 120.0f;
 	UPROPERTY(BlueprintReadWrite,EditAnywhere)
 	TEnumAsByte<EInteractionSystemType> InteractionType = EInteractionSystemType::SingleClick ;
 	UPROPERTY(BlueprintReadWrite,EditAnywhere , meta=(EditCondition = "InteractionType == EInteractionSystemType::HoldForDuration" , EditConditionHides))
 	float TimeToInteract = 1.0f;
-	// tick interval when we calculate the time it takes to interact with this item
-	UPROPERTY(BlueprintReadWrite,EditAnywhere , meta=(EditCondition = "InteractionType == EInteractionSystemType::HoldForDuration" , EditConditionHides))
-	float InteractionTickInterval = 0.05f;
-	
 
 	
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
@@ -51,17 +45,17 @@ public:
 	// called when this Interactable is on Focus (only called if CanInteract) (called once when the interactable can be interacted bug hasn't been interacted with yet)
 	UPROPERTY(BlueprintAssignable,DisplayName="On Focus Started")
 	FInteractableComponentDelagate OnFocusStartedDelegate;
-	void OnFocusStarted(UInteractionComponent* Interactor);
+	virtual void OnFocusStarted(UInteractionComponent* Interactor);
 
 	// called when this Interactable is no longer on focus
 	UPROPERTY(BlueprintAssignable ,DisplayName="On Focus Ended")
 	FInteractableComponentDelagate OnFocusEndedDelegate;
-	void OnFocusEnded(UInteractionComponent* Interactor);
+	virtual void OnFocusEnded(UInteractionComponent* Interactor);
 
 	// called when we start Interacting with this Interactable
 	UPROPERTY(BlueprintAssignable ,DisplayName="On Interaction Started")
 	FInteractableComponentDelagate OnInteractStartedDelegate;
-	void OnInteractStarted(UInteractionComponent* Interactor);
+	virtual void OnInteractStarted(UInteractionComponent* Interactor);
 	
 	/*
 	 * called once each 0.05f (@InteractionTickInterval) until we calculate the time it takes to complete the interaction time (@TimeToInteract)
@@ -69,20 +63,12 @@ public:
 	 */
 	UPROPERTY(BlueprintAssignable,DisplayName="On Interaction Update")
 	FInteractUpdateDelegate OnInteractUpdatedDelegate;
-	void OnInteractUpdate(UInteractionComponent* Interactor,float Alpha);
+	virtual void OnInteractUpdate(UInteractionComponent* Interactor,float Alpha);
 
 	// called when we start Interacting with this Interactable
 	UPROPERTY(BlueprintAssignable,DisplayName="On Interaction End")
 	FInteractEndedDelegate OnInteractEndedDelegate;
-	void OnInteractEnded(UInteractionComponent* Interactor, bool bSuccess);
-
-
-protected:
-	// Called when the game starts
-	virtual void BeginPlay() override;
+	virtual void OnInteractEnded(UInteractionComponent* Interactor, bool bSuccess);
 	
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType,FActorComponentTickFunction* ThisTickFunction) override;
-
-private:
 
 };
