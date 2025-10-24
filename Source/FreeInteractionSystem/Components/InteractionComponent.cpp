@@ -6,6 +6,7 @@
 #include "InteractableComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Engine/Engine.h"
+#include "FreeInteractionSystem/Actors/PostprocessActor.h"
 #include "GameFramework/Actor.h"
 
 
@@ -17,6 +18,13 @@ UInteractionComponent::UInteractionComponent()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
 
+	// load default Post process material for Highlight
+	if (bUseHighlightOutline) {
+		static ConstructorHelpers::FObjectFinder<UMaterialInterface> MaterialFinder(TEXT("/Script/Engine.MaterialInstanceConstant'/FreeInteractionSystem/Materials/PPMI_Outline.PPMI_Outline'"));
+		HighlightOutlinePostProcessMaterial = MaterialFinder.Object;
+	}
+
+	
 }
 
 
@@ -26,6 +34,19 @@ void UInteractionComponent::BeginPlay()
 	Super::BeginPlay();
 	
 	Camera = GetOwner()->GetComponentByClass<UCameraComponent>();
+	if(IsValid(Camera) == false)
+	{
+		UE_LOG(LogTemp,Error, TEXT("Interaction Error : Interaction Owner  has no Camera Component, Interaction will not work"));
+	}
+
+	// spawn post process volume
+	if(bUseHighlightOutline && HighlightOutlinePostProcessMaterial.IsNull() == false)
+	{
+		if(APostprocessActor* PostprocessActor = GetWorld()->SpawnActor<APostprocessActor>(APostprocessActor::StaticClass()))
+		{
+			PostprocessActor->SetPostProcessMaterial(HighlightOutlinePostProcessMaterial);
+		}
+	}
 }
 
 
@@ -36,8 +57,8 @@ void UInteractionComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 
-	CheckCounter-=DeltaTime;
-	if(CheckCounter <= 0)
+	CheckCounter -= DeltaTime;
+	if(CheckCounter <= 0.0f)
 	{
 		CheckInteraction();
 
@@ -94,6 +115,9 @@ void UInteractionComponent::StartInteraction()
 	}
 }
 
+
+
+
 void UInteractionComponent::UpdateInteraction(float Alpha,bool bCompleted)
 {
 	// the interaction time is ended
@@ -142,26 +166,24 @@ void UInteractionComponent::CheckInteraction()
 {
 	// Query parameters
 	FCollisionQueryParams QueryParams;
-	QueryParams.bTraceComplex = false; // Use simple collision shapes
+	QueryParams.bTraceComplex = false; 
 	QueryParams.bReturnPhysicalMaterial = false; // No need for physical material
-
-	// FCollisionObjectQueryParams ObjectQueryParams = FCollisionObjectQueryParams(InteractableObjectTypes);
 
 	FVector StartLoc = GetCameraTransform().GetLocation();
 	FVector EndLoc = StartLoc + GetCameraTransform().GetRotation().GetForwardVector() * MaxInteractDistance;
 	
 	// Perform the overlap query
-	FHitResult hit;
-	GetWorld()->LineTraceSingleByChannel(hit ,StartLoc , EndLoc ,TraceChannel , QueryParams);
+	FHitResult OutHit;
+	GetWorld()->LineTraceSingleByChannel(OutHit ,StartLoc , EndLoc ,TraceChannel , QueryParams);
 
 	bool bNoInteract = false;
 
 	
-	if(hit.bBlockingHit)
+	if(OutHit.bBlockingHit)
 	{
 		
 		// we hit an object
-		if(UInteractableComponent* FoundInteractableComponent = hit.GetActor()->GetComponentByClass<UInteractableComponent>())
+		if(UInteractableComponent* FoundInteractableComponent = OutHit.GetActor()->GetComponentByClass<UInteractableComponent>())
 		{
 			// the object is interactable
 			if(FoundInteractableComponent->CanInteract(this))
@@ -243,9 +265,11 @@ void UInteractionComponent::CurrentInteractableLostFocus()
 		FocusedInteractable = nullptr;
 	}
 
-
-	// TODO when this happens we need to make sure that we are not continuing the hold and counting  process for interaction
-	EndInteraction();
+	if(bHoldInteracting)
+	{
+		EndInteraction();
+	}
+	
 }
 
 

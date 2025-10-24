@@ -4,7 +4,7 @@
 #include "InteractableComponent.h"
 
 #include "InteractionComponent.h"
-#include "Camera/CameraComponent.h"
+#include "Components/MeshComponent.h"
 #include "Engine/Engine.h"
 
 
@@ -26,7 +26,7 @@ bool UInteractableComponent::CanInteract_Implementation(UInteractionComponent* I
 	FVector InteractorLoc = Interactor->GetOwner()->GetActorLocation();
 	FVector SelfLoc = GetOwner()->GetActorLocation();
 
-	if(FVector::Distance(InteractorLoc, SelfLoc) > InteractionDistance)
+	if( !FMath::IsNearlyZero(InteractionDistance) && FVector::Distance(InteractorLoc, SelfLoc) > InteractionDistance)
 	{
 		return false;
 	}
@@ -36,6 +36,10 @@ bool UInteractableComponent::CanInteract_Implementation(UInteractionComponent* I
 
 void UInteractableComponent::OnFocusStarted(UInteractionComponent* Interactor)
 {
+	if(bShowHighlightOnFocus)
+	{
+		SetRenderCustomDepth(true);
+	}
 	if(OnFocusStartedDelegate.IsBound()){
 		OnFocusStartedDelegate.Broadcast(Interactor);
 	}
@@ -43,6 +47,11 @@ void UInteractableComponent::OnFocusStarted(UInteractionComponent* Interactor)
 
 void UInteractableComponent::OnFocusEnded(UInteractionComponent* Interactor)
 {
+	if(bShowHighlightOnFocus)
+	{
+		SetRenderCustomDepth(false);
+	}
+	
 	if(OnFocusEndedDelegate.IsBound()){
 		OnFocusEndedDelegate.Broadcast(Interactor);
 	}
@@ -69,6 +78,17 @@ void UInteractableComponent::OnInteractEnded(UInteractionComponent* Interactor, 
 	if(OnInteractEndedDelegate.IsBound())
 	{
 		OnInteractEndedDelegate.Broadcast(Interactor, bSuccess);
+	}
+}
+
+void UInteractableComponent::SetRenderCustomDepth(const bool InValue)
+{
+	for(UActorComponent* Comp : GetOwner()->GetComponents())
+	{
+		if(UMeshComponent* MeshComp = Cast<UMeshComponent>(Comp))
+		{
+			MeshComp->SetRenderCustomDepth(InValue);
+		}
 	}
 }
 

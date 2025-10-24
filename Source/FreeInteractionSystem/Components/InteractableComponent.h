@@ -27,48 +27,55 @@ public:
 
 
 	
-	UPROPERTY(BlueprintReadWrite,EditAnywhere)
+	UPROPERTY(BlueprintReadWrite,EditAnywhere, Category="Interactable")
 	FInteractableVisualData ItemVisualData;
-	// min distance to interact with this
-	UPROPERTY(BlueprintReadWrite,EditAnywhere)
-	float InteractionDistance = 120.0f;
-	UPROPERTY(BlueprintReadWrite,EditAnywhere)
+	// min distance to interact with this object, 0.0 means no distance limit as long as the interactor can reach this interactable
+	UPROPERTY(BlueprintReadWrite,EditAnywhere, Category="Interactable")
+	float InteractionDistance = 0.0f;
+	UPROPERTY(BlueprintReadWrite,EditAnywhere, Category="Interactable")
+	bool bShowHighlightOnFocus = true;
+	UPROPERTY(BlueprintReadWrite,EditAnywhere, Category="Interactable")
 	TEnumAsByte<EInteractionSystemType> InteractionType = EInteractionSystemType::SingleClick ;
-	UPROPERTY(BlueprintReadWrite,EditAnywhere , meta=(EditCondition = "InteractionType == EInteractionSystemType::HoldForDuration" , EditConditionHides))
+	UPROPERTY(BlueprintReadWrite,EditAnywhere ,Category="Interactable",meta=(EditCondition = "InteractionType == EInteractionSystemType::HoldForDuration" , EditConditionHides))
 	float TimeToInteract = 1.0f;
 
 	
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	// can we interact with this Interactable, override and return false for cases when we need to avoid interaction
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="Interactable")
 	bool CanInteract(UInteractionComponent* Interactor  );
 	bool CanInteract_Implementation(UInteractionComponent* Interactor);
 
-	// called when this Interactable is on Focus (only called if CanInteract) (called once when the interactable can be interacted bug hasn't been interacted with yet)
-	UPROPERTY(BlueprintAssignable,DisplayName="On Focus Started")
+	// called when this Interactable is on Focus (only called if CanInteract) (called once when the interactable can be interacted but hasn't been interacted with yet)
+	UPROPERTY(BlueprintAssignable, Category="Interactable",DisplayName="On Focus Started")
 	FInteractableComponentDelagate OnFocusStartedDelegate;
 	virtual void OnFocusStarted(UInteractionComponent* Interactor);
 
 	// called when this Interactable is no longer on focus
-	UPROPERTY(BlueprintAssignable ,DisplayName="On Focus Ended")
+	UPROPERTY(BlueprintAssignable, Category="Interactable", DisplayName="On Focus Ended")
 	FInteractableComponentDelagate OnFocusEndedDelegate;
 	virtual void OnFocusEnded(UInteractionComponent* Interactor);
 
 	// called when we start Interacting with this Interactable
-	UPROPERTY(BlueprintAssignable ,DisplayName="On Interaction Started")
+	UPROPERTY(BlueprintAssignable, Category="Interactable", DisplayName="On Interaction Started")
 	FInteractableComponentDelagate OnInteractStartedDelegate;
 	virtual void OnInteractStarted(UInteractionComponent* Interactor);
 	
 	/*
 	 * called once each 0.05f (@InteractionTickInterval) until we calculate the time it takes to complete the interaction time (@TimeToInteract)
-	 * @param Alpha is the alpha starting from 0.0 to 1.0 indicates the alpha of the interaction time. 
+	 * @param Alpha is the alpha starting from 0.0 to 1.0 indicates the alpha (%) of the interaction time. 
 	 */
-	UPROPERTY(BlueprintAssignable,DisplayName="On Interaction Update")
+	UPROPERTY(BlueprintAssignable, Category="Interactable", DisplayName="On Interaction Update")
 	FInteractUpdateDelegate OnInteractUpdatedDelegate;
 	virtual void OnInteractUpdate(UInteractionComponent* Interactor,float Alpha);
 
 	// called when we start Interacting with this Interactable
-	UPROPERTY(BlueprintAssignable,DisplayName="On Interaction End")
+	UPROPERTY(BlueprintAssignable, Category="Interactable", DisplayName="On Interaction End")
 	FInteractEndedDelegate OnInteractEndedDelegate;
 	virtual void OnInteractEnded(UInteractionComponent* Interactor, bool bSuccess);
-	
+
+
+protected:
+
+	void SetRenderCustomDepth(const bool InValue);
 
 };

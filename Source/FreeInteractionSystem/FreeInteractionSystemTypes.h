@@ -6,6 +6,9 @@
 #include "FreeInteractionSystemTypes.generated.h"
 
 
+class UTexture2D;
+
+
 UENUM(BlueprintType)
 enum EInteractionSystemType
 {
@@ -19,12 +22,12 @@ struct FInteractableVisualData
 {
 	GENERATED_BODY();
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UTexture2D* ItemIcon;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FText ItemName;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FText ItemDescription;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Interactable|Visual Appearance")
+	UTexture2D* ItemIcon = nullptr;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite,Category="Interactable|Visual Appearance")
+	FText ItemName = {};
+	UPROPERTY(EditAnywhere, BlueprintReadWrite,Category="Interactable|Visual Appearance")
+	FText ItemDescription = {};
 };
 	
 
