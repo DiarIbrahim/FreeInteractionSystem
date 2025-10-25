@@ -52,12 +52,15 @@ public:
 	UPROPERTY(BlueprintReadWrite,EditAnywhere, Category="Ineraction|Advanced" , meta=(EditCondition="bUseHighlightOutline"))
 	TSoftObjectPtr<UMaterialInterface> HighlightOutlinePostProcessMaterial;
 
+	// TODO add settings to automatically bind this fuction to an InputAction Asset (preferably Input Action per interactable and/or default Input Action)
 	
+	// should be called explicitly when interaction input is pressed, starts the interaction with the object on focus, the call will be ignored when no interactable actor is on focus
 	UFUNCTION(BlueprintCallable, Category="Ineraction")
 	void StartInteraction();
 
 	void UpdateInteraction(float Alpha, bool bCompleted);
 	
+	// end interaction, this should be called explicitly when the interaction input is released, this is useful for timed interactions.
 	UFUNCTION(BlueprintCallable, Category="Ineraction")
 	void EndInteraction();
 
@@ -73,17 +76,16 @@ public:
 	FOnInteractionUpdateSigniture OnInteractUpdate;
 	UPROPERTY(BlueprintAssignable, Category="Ineraction")
 	FOnInteractionFinishSigniture OnInteractFinished;
-
-	void CheckInteraction();
-
-	FTransform GetCameraTransform();
-
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
 	                           FActorComponentTickFunction* ThisTickFunction) override;
+
+	void CheckInteraction();
+	FTransform GetCameraTransform();
+
 
 	// called when an interactable went on focus
 	void InteractableOnFocus(UInteractableComponent* InteractableComponent);
