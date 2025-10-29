@@ -59,6 +59,9 @@ public:
 	// the default interaction input, used for any interactable that has no InputAction specified for.
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ineraction|Input")
 	TSoftObjectPtr<UInputAction> DefaultInteractionInputAction;
+	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ineraction|Input")
+	FKey DefaultInputkeyForUI = EKeys::F;
 
 	// should be called explicitly when interaction input is pressed, starts the interaction with the object on focus, the call will be ignored when no interactable actor is on focus
 	UFUNCTION(BlueprintCallable, Category="Ineraction")

@@ -38,15 +38,14 @@ public:
 	TEnumAsByte<EInteractionSystemType> InteractionType = EInteractionSystemType::SingleClick ;
 	UPROPERTY(BlueprintReadWrite,EditAnywhere ,Category="Interactable",meta=(EditCondition = "InteractionType == EInteractionSystemType::HoldForDuration" , EditConditionHides))
 	float TimeToInteract = 1.0f;
-	
-	// if set to false, we will use default interaction input to interact with this interactable actor.
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Interactable|Input")
-	bool bUsesCustomInput = false;
-	// input to use to interact with this interactable
+
+	// input to use to interact with this interactable, we will use default input to interact with this object if custom input not provided
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Interactable|Input", meta = (EditCondition = bUsesCustomInput, EditConditionHides))
 	TSoftObjectPtr<UInputAction> CustomInputAction = nullptr;
+	// a key that can be passed to UI to represent the interaction key.
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Interactable|Input")
+	FKey CustomInputkeyForUI;
 
-	
 	// can we interact with this Interactable, override and return false for cases when we need to avoid interaction
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="Interactable")
 	bool CanInteract(UInteractionComponent* Interactor  );

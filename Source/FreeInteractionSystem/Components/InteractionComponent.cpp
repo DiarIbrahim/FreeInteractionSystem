@@ -300,7 +300,7 @@ void UInteractionComponent::BindInteractabelInput(const UInteractableComponent* 
 	UInputAction* TargetInputAction;
 
 	// lets check if we have custom input ?
-	if (InInteractable->bUsesCustomInput) {
+	if (InInteractable->CustomInputAction.IsNull() == false) {
 		TargetInputAction = InInteractable->CustomInputAction.LoadSynchronous();
 	}
 	else {
