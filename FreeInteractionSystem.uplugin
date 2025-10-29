@@ -6,7 +6,7 @@
 	"Description": "A Free Interaction System",
 	"Category": "Diar Free Plugins",
 	"CreatedBy": "Diar Ibrahim",
-	"CreatedByURL": "https://x.com/diar__Ibrahim",
+	"CreatedByURL": "https://www.linkedin.com/in/diar-ibrahim-ali/",
 	"DocsURL": "",
 	"MarketplaceURL": "",
 	"SupportURL": "",
@@ -19,6 +19,13 @@
 			"Name": "FreeInteractionSystem",
 			"Type": "Runtime",
 			"LoadingPhase": "Default"
+		}
+	],
+
+	"plugins": [
+		{
+			"Name": "EnhancedInput",
+			"Enabled": true
 		}
 	]
 }

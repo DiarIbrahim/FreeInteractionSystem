@@ -2,12 +2,14 @@
 
 
 #include "InteractionComponent.h"
-
 #include "InteractableComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Engine/Engine.h"
 #include "FreeInteractionSystem/Actors/PostprocessActor.h"
 #include "GameFramework/Actor.h"
+#include "UObject/ConstructorHelpers.h"
+#include "InputAction.h"
+#include "EnhancedInputComponent.h"
 
 
 class UInteractableComponent;
@@ -47,6 +49,17 @@ void UInteractionComponent::BeginPlay()
 			PostprocessActor->SetPostProcessMaterial(HighlightOutlinePostProcessMaterial);
 		}
 	}
+
+	// get inhancedInputComponent
+	if (APawn* OwningPawn = Cast<APawn>(GetOwner())) {
+		InputCompponent = OwningPawn->GetController()->GetComponentByClass<UEnhancedInputComponent>();
+		
+		if (IsValid(InputCompponent) == false)
+		{
+			UE_LOG(LogTemp, Error, TEXT("Interaction Error : Interaction Owner  has no Enhanced Input Component, make sure enhanced input settings are correct in the project settings"));
+		}
+	}
+
 }
 
 
@@ -241,7 +254,7 @@ void UInteractionComponent::CheckInteraction()
 
 void UInteractionComponent::InteractableOnFocus(UInteractableComponent* InteractableComponent)
 {
-	if(InteractableComponent)
+	if(IsValid(InteractableComponent))
 	{
 		InteractableComponent->OnFocusStarted(this);
 		FocusedInteractable = InteractableComponent;
@@ -250,6 +263,10 @@ void UInteractionComponent::InteractableOnFocus(UInteractableComponent* Interact
 	{
 		OnFocusStarted.Broadcast(InteractableComponent);
 	}
+
+	// bind input
+	BindInteractabelInput(InteractableComponent);
+
 }
 
 void UInteractionComponent::CurrentInteractableLostFocus()
@@ -258,18 +275,52 @@ void UInteractionComponent::CurrentInteractableLostFocus()
 	{
 		OnFocusLost.Broadcast(FocusedInteractable);
 	}
-	
-	if(FocusedInteractable)
-	{
-		FocusedInteractable->OnFocusEnded(this);
-		FocusedInteractable = nullptr;
-	}
 
-	if(bHoldInteracting)
+	if (bHoldInteracting)
 	{
 		EndInteraction();
 	}
-	
+
+	if(IsValid(FocusedInteractable))
+	{
+		FocusedInteractable->OnFocusEnded(this);
+	}
+
+	// unbinnd input 
+	UnBindInteractableInput(FocusedInteractable);
+
+	FocusedInteractable = nullptr;
+
+}
+
+void UInteractionComponent::BindInteractabelInput(const UInteractableComponent* InInteractable)
+{
+	if (IsValid(InInteractable) == false || IsValid(InputCompponent) == false) return;
+
+	UInputAction* TargetInputAction;
+
+	// lets check if we have custom input ?
+	if (InInteractable->bUsesCustomInput) {
+		TargetInputAction = InInteractable->CustomInputAction.LoadSynchronous();
+	}
+	else {
+		// otherwise just use default
+		TargetInputAction = DefaultInteractionInputAction.LoadSynchronous();
+	}
+
+	if (IsValid(TargetInputAction) == false) return;
+
+	StartInteractBindHandle =  InputCompponent->BindAction(TargetInputAction,ETriggerEvent::Started, this, &UInteractionComponent::StartInteraction).GetHandle();
+	EndInteractBindHandle   = InputCompponent->BindAction(TargetInputAction, ETriggerEvent::Completed, this, &UInteractionComponent::EndInteraction).GetHandle();
+}
+
+void UInteractionComponent::UnBindInteractableInput(const UInteractableComponent* InInteractable)
+{
+	InputCompponent->RemoveBindingByHandle(StartInteractBindHandle);
+	InputCompponent->RemoveBindingByHandle(EndInteractBindHandle);
+
+	// call end interaction explicitly
+	EndInteraction();
 }
 
 

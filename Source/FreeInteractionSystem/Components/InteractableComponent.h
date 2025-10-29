@@ -9,7 +9,7 @@
 #include "InteractableComponent.generated.h"
 
 class UInteractionComponent;
-
+class UInputAction;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FInteractableComponentDelagate , UInteractionComponent*, Interactor);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FInteractUpdateDelegate , UInteractionComponent*, Interactor , float , Alpha);
@@ -38,6 +38,13 @@ public:
 	TEnumAsByte<EInteractionSystemType> InteractionType = EInteractionSystemType::SingleClick ;
 	UPROPERTY(BlueprintReadWrite,EditAnywhere ,Category="Interactable",meta=(EditCondition = "InteractionType == EInteractionSystemType::HoldForDuration" , EditConditionHides))
 	float TimeToInteract = 1.0f;
+	
+	// if set to false, we will use default interaction input to interact with this interactable actor.
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Interactable|Input")
+	bool bUsesCustomInput = false;
+	// input to use to interact with this interactable
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Interactable|Input", meta = (EditCondition = bUsesCustomInput, EditConditionHides))
+	TSoftObjectPtr<UInputAction> CustomInputAction = nullptr;
 
 	
 	// can we interact with this Interactable, override and return false for cases when we need to avoid interaction

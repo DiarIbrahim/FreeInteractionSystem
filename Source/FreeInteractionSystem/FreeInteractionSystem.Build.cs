@@ -38,9 +38,12 @@ public class FreeInteractionSystem : ModuleRules
 				"Engine",
 				"Slate",
 				"SlateCore",
+                "InputCore",
+                "EnhancedInput",
+				"GameplayTags"
 				// ... add private dependencies that you statically link with here ...	
 			}
-			);
+            );
 		
 		
 		DynamicallyLoadedModuleNames.AddRange(

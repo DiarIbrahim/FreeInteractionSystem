@@ -15,6 +15,8 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnInteractionFinishSigniture , UIn
 
 
 class UInteractableComponent;
+class UInputAction;
+class UEnhancedInputComponent;
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class FREEINTERACTIONSYSTEM_API UInteractionComponent : public UActorComponent
@@ -52,8 +54,12 @@ public:
 	UPROPERTY(BlueprintReadWrite,EditAnywhere, Category="Ineraction|Advanced" , meta=(EditCondition="bUseHighlightOutline"))
 	TSoftObjectPtr<UMaterialInterface> HighlightOutlinePostProcessMaterial;
 
-	// TODO add settings to automatically bind this fuction to an InputAction Asset (preferably Input Action per interactable and/or default Input Action)
-	
+	// Inputs
+
+	// the default interaction input, used for any interactable that has no InputAction specified for.
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ineraction|Input")
+	TSoftObjectPtr<UInputAction> DefaultInteractionInputAction;
+
 	// should be called explicitly when interaction input is pressed, starts the interaction with the object on focus, the call will be ignored when no interactable actor is on focus
 	UFUNCTION(BlueprintCallable, Category="Ineraction")
 	void StartInteraction();
@@ -76,27 +82,37 @@ public:
 	FOnInteractionUpdateSigniture OnInteractUpdate;
 	UPROPERTY(BlueprintAssignable, Category="Ineraction")
 	FOnInteractionFinishSigniture OnInteractFinished;
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
 	                           FActorComponentTickFunction* ThisTickFunction) override;
-
 	void CheckInteraction();
 	FTransform GetCameraTransform();
-
 
 	// called when an interactable went on focus
 	void InteractableOnFocus(UInteractableComponent* InteractableComponent);
 	// called when currently focused interactable lost focus
 	void CurrentInteractableLostFocus();
+
+	// binds to interactable's input action and listens for inputs.
+	void BindInteractabelInput(const UInteractableComponent* InInteractable);
+	// removes interactable's input binding and calls interaction end automatically.
+	void UnBindInteractableInput(const UInteractableComponent* InInteractable);
 	
 private:
 	UPROPERTY()
 	class UCameraComponent* Camera;
 	UPROPERTY()
 	UInteractableComponent* FocusedInteractable;
+	UPROPERTY()
+	UEnhancedInputComponent* InputCompponent;
+
+	int32 StartInteractBindHandle = -1;
+	int32 EndInteractBindHandle = -1;
+
 
 	bool bHoldInteracting = false;
 	float HoldInteractingTime = 0.0f;
