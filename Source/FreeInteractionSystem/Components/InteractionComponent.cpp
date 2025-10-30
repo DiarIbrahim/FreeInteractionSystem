@@ -6,10 +6,12 @@
 #include "Camera/CameraComponent.h"
 #include "Engine/Engine.h"
 #include "FreeInteractionSystem/Actors/PostprocessActor.h"
-#include "GameFramework/Actor.h"
 #include "UObject/ConstructorHelpers.h"
 #include "InputAction.h"
 #include "EnhancedInputComponent.h"
+#include "GameFramework/Actor.h"
+#include "GameFramework/Pawn.h"
+#include "GameFramework/PlayerController.h"
 
 
 class UInteractableComponent;
