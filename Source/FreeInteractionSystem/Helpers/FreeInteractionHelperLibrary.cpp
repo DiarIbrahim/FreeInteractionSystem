@@ -2,11 +2,11 @@
 
 
 #include "FreeInteractionHelperLibrary.h"
-#include "FreeInteractionSystem/Components/InteractableComponent.h"
-#include "FreeInteractionSystem/Components/InteractionComponent.h"
+#include "FreeInteractionSystem/Components/FreeInteractableComponent.h"
+#include "FreeInteractionSystem/Components/FreeInteractionComponent.h"
 #include "EnhancedinputComponent.h"
 
-FKey UFreeInteractionHelperLibrary::GetInteractionKey(UInteractionComponent* InteractionComponent, UInteractableComponent* InteractableComponent)
+FKey UFreeInteractionHelperLibrary::GetInteractionKey(UFreeInteractionComponent* InteractionComponent, UFreeInteractableComponent* InteractableComponent)
 {
 	if (IsValid(InteractionComponent) == false || IsValid(InteractableComponent) == false) return FKey();
 
@@ -18,7 +18,7 @@ FKey UFreeInteractionHelperLibrary::GetInteractionKey(UInteractionComponent* Int
 	}
 }
 
-FText UFreeInteractionHelperLibrary::GetInteractionKeyText(UInteractionComponent* InteractionComponent, UInteractableComponent* InteractableComponent)
+FText UFreeInteractionHelperLibrary::GetInteractionKeyText(UFreeInteractionComponent* InteractionComponent, UFreeInteractableComponent* InteractableComponent)
 {
 	return GetInteractionKey(InteractionComponent, InteractableComponent).GetDisplayName();
 }

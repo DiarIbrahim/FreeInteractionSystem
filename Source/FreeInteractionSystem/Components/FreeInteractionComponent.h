@@ -5,27 +5,27 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "GameFramework/Actor.h"
-#include "InteractionComponent.generated.h"
+#include "FreeInteractionComponent.generated.h"
 
 
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnInteractionSigniture , UInteractableComponent* , Interactable);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnInteractionUpdateSigniture , UInteractableComponent* , Interactable, float, Alpha);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnInteractionFinishSigniture , UInteractableComponent* , Interactable, bool, bSuccess);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnInteractionSigniture , UFreeInteractableComponent* , Interactable);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnInteractionUpdateSigniture , UFreeInteractableComponent* , Interactable, float, Alpha);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnInteractionFinishSigniture , UFreeInteractableComponent* , Interactable, bool, bSuccess);
 
 
-class UInteractableComponent;
+class UFreeInteractableComponent;
 class UInputAction;
 class UEnhancedInputComponent;
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
-class FREEINTERACTIONSYSTEM_API UInteractionComponent : public UActorComponent
+class FREEINTERACTIONSYSTEM_API UFreeInteractionComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this component's properties
-	UInteractionComponent();
+	UFreeInteractionComponent();
 
 
 	// how frequently check for interactable Actors, 0.0 means on tick
@@ -96,20 +96,20 @@ protected:
 	FTransform GetCameraTransform();
 
 	// called when an interactable went on focus
-	void InteractableOnFocus(UInteractableComponent* InteractableComponent);
+	void InteractableOnFocus(UFreeInteractableComponent* InteractableComponent);
 	// called when currently focused interactable lost focus
 	void CurrentInteractableLostFocus();
 
 	// binds to interactable's input action and listens for inputs.
-	void BindInteractabelInput(const UInteractableComponent* InInteractable);
+	void BindInteractabelInput(const UFreeInteractableComponent* InInteractable);
 	// removes interactable's input binding and calls interaction end automatically.
-	void UnBindInteractableInput(const UInteractableComponent* InInteractable);
+	void UnBindInteractableInput(const UFreeInteractableComponent* InInteractable);
 	
 private:
 	UPROPERTY()
 	class UCameraComponent* Camera;
 	UPROPERTY()
-	UInteractableComponent* FocusedInteractable;
+	UFreeInteractableComponent* FocusedInteractable;
 	UPROPERTY()
 	UEnhancedInputComponent* InputCompponent;
 

@@ -6,24 +6,24 @@
 #include "Components/ActorComponent.h"
 #include "FreeInteractionSystem/FreeInteractionSystemTypes.h"
 #include "GameFramework/Actor.h"
-#include "InteractableComponent.generated.h"
+#include "FreeInteractableComponent.generated.h"
 
-class UInteractionComponent;
+class UFreeInteractionComponent;
 class UInputAction;
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FInteractableComponentDelagate , UInteractionComponent*, Interactor);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FInteractUpdateDelegate , UInteractionComponent*, Interactor , float , Alpha);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FInteractEndedDelegate , UInteractionComponent*, Interactor , bool , bSuccess);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FInteractableComponentDelagate , UFreeInteractionComponent*, Interactor);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FInteractUpdateDelegate , UFreeInteractionComponent*, Interactor , float , Alpha);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FInteractEndedDelegate , UFreeInteractionComponent*, Interactor , bool , bSuccess);
 
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
-class FREEINTERACTIONSYSTEM_API UInteractableComponent : public UActorComponent
+class FREEINTERACTIONSYSTEM_API UFreeInteractableComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this component's properties
-	UInteractableComponent();
+	UFreeInteractableComponent();
 
 
 	
@@ -48,23 +48,23 @@ public:
 
 	// can we interact with this Interactable, override and return false for cases when we need to avoid interaction
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="Interactable")
-	bool CanInteract(UInteractionComponent* Interactor  );
-	bool CanInteract_Implementation(UInteractionComponent* Interactor);
+	bool CanInteract(UFreeInteractionComponent* Interactor  );
+	bool CanInteract_Implementation(UFreeInteractionComponent* Interactor);
 
 	// called when this Interactable is on Focus (only called if CanInteract) (called once when the interactable can be interacted but hasn't been interacted with yet)
 	UPROPERTY(BlueprintAssignable, Category="Interactable",DisplayName="On Focus Started")
 	FInteractableComponentDelagate OnFocusStartedDelegate;
-	virtual void OnFocusStarted(UInteractionComponent* Interactor);
+	virtual void OnFocusStarted(UFreeInteractionComponent* Interactor);
 
 	// called when this Interactable is no longer on focus
 	UPROPERTY(BlueprintAssignable, Category="Interactable", DisplayName="On Focus Ended")
 	FInteractableComponentDelagate OnFocusEndedDelegate;
-	virtual void OnFocusEnded(UInteractionComponent* Interactor);
+	virtual void OnFocusEnded(UFreeInteractionComponent* Interactor);
 
 	// called when we start Interacting with this Interactable
 	UPROPERTY(BlueprintAssignable, Category="Interactable", DisplayName="On Interaction Started")
 	FInteractableComponentDelagate OnInteractStartedDelegate;
-	virtual void OnInteractStarted(UInteractionComponent* Interactor);
+	virtual void OnInteractStarted(UFreeInteractionComponent* Interactor);
 	
 	/*
 	 * called once each 0.05f (@InteractionTickInterval) until we calculate the time it takes to complete the interaction time (@TimeToInteract)
@@ -72,12 +72,12 @@ public:
 	 */
 	UPROPERTY(BlueprintAssignable, Category="Interactable", DisplayName="On Interaction Update")
 	FInteractUpdateDelegate OnInteractUpdatedDelegate;
-	virtual void OnInteractUpdate(UInteractionComponent* Interactor,float Alpha);
+	virtual void OnInteractUpdate(UFreeInteractionComponent* Interactor,float Alpha);
 
 	// called when we start Interacting with this Interactable
 	UPROPERTY(BlueprintAssignable, Category="Interactable", DisplayName="On Interaction End")
 	FInteractEndedDelegate OnInteractEndedDelegate;
-	virtual void OnInteractEnded(UInteractionComponent* Interactor, bool bSuccess);
+	virtual void OnInteractEnded(UFreeInteractionComponent* Interactor, bool bSuccess);
 
 
 protected:

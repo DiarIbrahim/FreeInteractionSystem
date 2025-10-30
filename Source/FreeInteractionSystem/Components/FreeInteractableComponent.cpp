@@ -1,15 +1,15 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "InteractableComponent.h"
+#include "FreeInteractableComponent.h"
 
-#include "InteractionComponent.h"
+#include "FreeInteractionComponent.h"
 #include "Components/MeshComponent.h"
 #include "Engine/Engine.h"
 
 
 // Sets default values for this component's properties
-UInteractableComponent::UInteractableComponent()
+UFreeInteractableComponent::UFreeInteractableComponent()
 {
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
@@ -19,7 +19,7 @@ UInteractableComponent::UInteractableComponent()
 	
 }
 
-bool UInteractableComponent::CanInteract_Implementation(UInteractionComponent* Interactor)
+bool UFreeInteractableComponent::CanInteract_Implementation(UFreeInteractionComponent* Interactor)
 {
 	if(Interactor == nullptr) return false;
 
@@ -34,7 +34,7 @@ bool UInteractableComponent::CanInteract_Implementation(UInteractionComponent* I
 	return true;
 }
 
-void UInteractableComponent::OnFocusStarted(UInteractionComponent* Interactor)
+void UFreeInteractableComponent::OnFocusStarted(UFreeInteractionComponent* Interactor)
 {
 	if(bShowHighlightOnFocus)
 	{
@@ -45,7 +45,7 @@ void UInteractableComponent::OnFocusStarted(UInteractionComponent* Interactor)
 	}
 }
 
-void UInteractableComponent::OnFocusEnded(UInteractionComponent* Interactor)
+void UFreeInteractableComponent::OnFocusEnded(UFreeInteractionComponent* Interactor)
 {
 	if(bShowHighlightOnFocus)
 	{
@@ -57,7 +57,7 @@ void UInteractableComponent::OnFocusEnded(UInteractionComponent* Interactor)
 	}
 }
 
-void UInteractableComponent::OnInteractStarted(UInteractionComponent* Interactor)
+void UFreeInteractableComponent::OnInteractStarted(UFreeInteractionComponent* Interactor)
 {
 	if(OnInteractStartedDelegate.IsBound())
 	{
@@ -65,7 +65,7 @@ void UInteractableComponent::OnInteractStarted(UInteractionComponent* Interactor
 	}
 }
 
-void UInteractableComponent::OnInteractUpdate(UInteractionComponent* Interactor, float Alpha)
+void UFreeInteractableComponent::OnInteractUpdate(UFreeInteractionComponent* Interactor, float Alpha)
 {
 	if(OnInteractUpdatedDelegate.IsBound())
 	{
@@ -73,7 +73,7 @@ void UInteractableComponent::OnInteractUpdate(UInteractionComponent* Interactor,
 	}
 }
 
-void UInteractableComponent::OnInteractEnded(UInteractionComponent* Interactor, bool bSuccess)
+void UFreeInteractableComponent::OnInteractEnded(UFreeInteractionComponent* Interactor, bool bSuccess)
 {
 	if(OnInteractEndedDelegate.IsBound())
 	{
@@ -81,7 +81,7 @@ void UInteractableComponent::OnInteractEnded(UInteractionComponent* Interactor, 
 	}
 }
 
-void UInteractableComponent::SetRenderCustomDepth(const bool InValue)
+void UFreeInteractableComponent::SetRenderCustomDepth(const bool InValue)
 {
 	for(UActorComponent* Comp : GetOwner()->GetComponents())
 	{

@@ -1,8 +1,8 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "InteractionComponent.h"
-#include "InteractableComponent.h"
+#include "FreeInteractionComponent.h"
+#include "FreeInteractableComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Engine/Engine.h"
 #include "FreeInteractionSystem/Actors/PostprocessActor.h"
@@ -12,11 +12,13 @@
 #include "GameFramework/Actor.h"
 #include "GameFramework/Pawn.h"
 #include "GameFramework/PlayerController.h"
+#include "Engine/HitResult.h"
+#include "Materials/MaterialInterface.h"
 
 
-class UInteractableComponent;
+class UFreeInteractableComponent;
 // Sets default values for this component's properties
-UInteractionComponent::UInteractionComponent()
+UFreeInteractionComponent::UFreeInteractionComponent()
 {
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
@@ -33,7 +35,7 @@ UInteractionComponent::UInteractionComponent()
 
 
 // Called when the game starts
-void UInteractionComponent::BeginPlay()
+void UFreeInteractionComponent::BeginPlay()
 {
 	Super::BeginPlay();
 	
@@ -66,7 +68,7 @@ void UInteractionComponent::BeginPlay()
 
 
 // Called every frame
-void UInteractionComponent::TickComponent(float DeltaTime, ELevelTick TickType,
+void UFreeInteractionComponent::TickComponent(float DeltaTime, ELevelTick TickType,
                                                     FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
@@ -100,7 +102,7 @@ void UInteractionComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 }
 
 
-void UInteractionComponent::StartInteraction()
+void UFreeInteractionComponent::StartInteraction()
 {
 
 	// when we start interacting there needs to be an interactable on focus
@@ -133,7 +135,7 @@ void UInteractionComponent::StartInteraction()
 
 
 
-void UInteractionComponent::UpdateInteraction(float Alpha,bool bCompleted)
+void UFreeInteractionComponent::UpdateInteraction(float Alpha,bool bCompleted)
 {
 	// the interaction time is ended
 	if(FocusedInteractable)
@@ -154,7 +156,7 @@ void UInteractionComponent::UpdateInteraction(float Alpha,bool bCompleted)
 	
 }
 
-void UInteractionComponent::EndInteraction()
+void UFreeInteractionComponent::EndInteraction()
 {
 	if(bInteractionEnded) return;
 	bInteractionEnded = true;
@@ -177,7 +179,7 @@ void UInteractionComponent::EndInteraction()
 	HoldInteractingTimeCounter = 0.0f;
 }
 
-void UInteractionComponent::CheckInteraction()
+void UFreeInteractionComponent::CheckInteraction()
 {
 	// Query parameters
 	FCollisionQueryParams QueryParams;
@@ -198,7 +200,7 @@ void UInteractionComponent::CheckInteraction()
 	{
 		
 		// we hit an object
-		if(UInteractableComponent* FoundInteractableComponent = OutHit.GetActor()->GetComponentByClass<UInteractableComponent>())
+		if(UFreeInteractableComponent* FoundInteractableComponent = OutHit.GetActor()->GetComponentByClass<UFreeInteractableComponent>())
 		{
 			// the object is interactable
 			if(FoundInteractableComponent->CanInteract(this))
@@ -254,7 +256,7 @@ void UInteractionComponent::CheckInteraction()
 }
 
 
-void UInteractionComponent::InteractableOnFocus(UInteractableComponent* InteractableComponent)
+void UFreeInteractionComponent::InteractableOnFocus(UFreeInteractableComponent* InteractableComponent)
 {
 	if(IsValid(InteractableComponent))
 	{
@@ -271,7 +273,7 @@ void UInteractionComponent::InteractableOnFocus(UInteractableComponent* Interact
 
 }
 
-void UInteractionComponent::CurrentInteractableLostFocus()
+void UFreeInteractionComponent::CurrentInteractableLostFocus()
 {
 	if(OnFocusLost.IsBound())
 	{
@@ -295,7 +297,7 @@ void UInteractionComponent::CurrentInteractableLostFocus()
 
 }
 
-void UInteractionComponent::BindInteractabelInput(const UInteractableComponent* InInteractable)
+void UFreeInteractionComponent::BindInteractabelInput(const UFreeInteractableComponent* InInteractable)
 {
 	if (IsValid(InInteractable) == false || IsValid(InputCompponent) == false) return;
 
@@ -312,11 +314,11 @@ void UInteractionComponent::BindInteractabelInput(const UInteractableComponent* 
 
 	if (IsValid(TargetInputAction) == false) return;
 
-	StartInteractBindHandle =  InputCompponent->BindAction(TargetInputAction,ETriggerEvent::Started, this, &UInteractionComponent::StartInteraction).GetHandle();
-	EndInteractBindHandle   = InputCompponent->BindAction(TargetInputAction, ETriggerEvent::Completed, this, &UInteractionComponent::EndInteraction).GetHandle();
+	StartInteractBindHandle =  InputCompponent->BindAction(TargetInputAction,ETriggerEvent::Started, this, &UFreeInteractionComponent::StartInteraction).GetHandle();
+	EndInteractBindHandle   = InputCompponent->BindAction(TargetInputAction, ETriggerEvent::Completed, this, &UFreeInteractionComponent::EndInteraction).GetHandle();
 }
 
-void UInteractionComponent::UnBindInteractableInput(const UInteractableComponent* InInteractable)
+void UFreeInteractionComponent::UnBindInteractableInput(const UFreeInteractableComponent* InInteractable)
 {
 	InputCompponent->RemoveBindingByHandle(StartInteractBindHandle);
 	InputCompponent->RemoveBindingByHandle(EndInteractBindHandle);
@@ -326,7 +328,7 @@ void UInteractionComponent::UnBindInteractableInput(const UInteractableComponent
 }
 
 
-FTransform UInteractionComponent::GetCameraTransform()
+FTransform UFreeInteractionComponent::GetCameraTransform()
 {
 	if(Camera == nullptr) return FTransform();
 	return Camera->GetComponentTransform();

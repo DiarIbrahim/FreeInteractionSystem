@@ -7,8 +7,8 @@
 #include "FreeInteractionHelperLibrary.generated.h"
 
 class UInputAction;
-class UInteractionComponent;
-class UInteractableComponent;
+class UFreeInteractionComponent;
+class UFreeInteractableComponent;
 
 
 /**
@@ -20,9 +20,9 @@ class FREEINTERACTIONSYSTEM_API UFreeInteractionHelperLibrary : public UBlueprin
 	GENERATED_BODY()
 
 	UFUNCTION(BlueprintCallable, Category = "Free Interaction Helpers|Inputs")
-	static FKey GetInteractionKey(UInteractionComponent* InteractionComponent, UInteractableComponent* InteractableComponent);
+	static FKey GetInteractionKey(UFreeInteractionComponent* InteractionComponent, UFreeInteractableComponent* InteractableComponent);
 
 	UFUNCTION(BlueprintCallable, Category = "Free Interaction Helpers|Inputs")
-	static FText GetInteractionKeyText(UInteractionComponent* InteractionComponent, UInteractableComponent* InteractableComponent);
+	static FText GetInteractionKeyText(UFreeInteractionComponent* InteractionComponent, UFreeInteractableComponent* InteractableComponent);
 
 };
