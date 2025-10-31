@@ -247,7 +247,7 @@ void UFreeInteractionComponent::CheckInteraction()
 
 
 
-	if(bNoInteract)
+	if(bNoInteract && IsValid(FocusedInteractable))
 	{
 		// this means either no actor hit or the hit actor is not interactable (or can not interact at the moment)
 
@@ -275,6 +275,8 @@ void UFreeInteractionComponent::InteractableOnFocus(UFreeInteractableComponent* 
 
 void UFreeInteractionComponent::CurrentInteractableLostFocus()
 {
+	if (IsValid(FocusedInteractable) == false) return;
+
 	if(OnFocusLost.IsBound())
 	{
 		OnFocusLost.Broadcast(FocusedInteractable);
@@ -285,10 +287,7 @@ void UFreeInteractionComponent::CurrentInteractableLostFocus()
 		EndInteraction();
 	}
 
-	if(IsValid(FocusedInteractable))
-	{
-		FocusedInteractable->OnFocusEnded(this);
-	}
+	FocusedInteractable->OnFocusEnded(this);
 
 	// unbinnd input 
 	UnBindInteractableInput(FocusedInteractable);
